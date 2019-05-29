@@ -11788,8 +11788,8 @@ a")
 
         self.assertIsNot(other_strong_mod.weak, other_strong_mod.weak2)
 
-        with self.assertRaisesRegex(RuntimeError, "Cannot call a ScriptModule that is not a submodule of the caller"):
-            strong_mod = Strong()
+        strong_mod = Strong()
+        FileCheck().check("python_value").run(str(strong_mod.graph))
 
     def test_weak_module_copying(self):
         class Submodule(torch.nn.Module):
@@ -11844,6 +11844,8 @@ a")
         weak_mod.weight = torch.nn.Parameter(torch.ones(5, 5) * 100)
         self.assertFalse(strong_mod(inp).allclose(weak_mod(inp)))
 
+    # TODO: re-enable this test once WeakScriptModuleProxy has been deleted
+    @unittest.skipIf(True)
     def test_weak_module_isinstance(self):
         tester = self
 
